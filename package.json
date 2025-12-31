@@ -1,27 +1,22 @@
+
 {
   "name": "whatsapp-status-saver",
+  "version": "1.0.0",
+  "description": "A web application to browse, download, and share mock WhatsApp statuses.",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "ng serve",
-    "build": "ng build",
-    "preview": "ng serve --configuration=production"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "rxjs": "^7.8.2",
-    "@angular/common": "^21.0.0",
-    "@angular/platform-browser": "^21.0.0",
-    "@angular/core": "^21.0.0",
-    "@angular/compiler": "^21.0.0",
-    "@angular/build": "^21.0.0",
-    "@angular/cli": "^21.0.0",
-    "@angular/compiler-cli": "^21.0.0",
-    "tailwindcss": "latest"
+    "@angular/common": "^21.0.6",
+    "@angular/core": "^21.0.6",
+    "@angular/platform-browser": "^21.0.6",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.0"
+    "@capacitor/android": "^6.1.1",
+    "@capacitor/cli": "^6.1.1",
+    "@capacitor/core": "^6.1.1",
+    "typescript": "^5.5.4"
   }
 }
