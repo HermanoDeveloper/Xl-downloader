@@ -5,7 +5,7 @@
   "description": "A web application to browse, download, and share mock WhatsApp statuses.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "dependencies": {
     "@angular/common": "^21.0.6",
