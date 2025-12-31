@@ -1,0 +1,84 @@
+
+@if (savedStatuses().length > 0) {
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @for (status of savedStatuses(); track status.id) {
+      <div (click)="viewStatus(status)" class="group relative aspect-[4/5] bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-300">
+        <img [ngSrc]="status.thumbnailUrl" [alt]="'Status from ' + status.user" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" width="300" height="375" priority="true" />
+        
+        @if (status.type === 'video') {
+          <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+            <svg class="w-12 h-12 text-white opacity-80" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        }
+
+        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+          <div class="flex items-center">
+            <img [ngSrc]="status.avatarUrl" [alt]="status.user" class="w-8 h-8 rounded-full border-2 border-accent" width="40" height="40" />
+            <span class="text-white font-semibold ml-2 truncate">{{ status.user }}</span>
+          </div>
+        </div>
+
+        <div class="absolute top-2 right-2 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button (click)="removeStatus(status.id, $event)" title="Delete" class="p-2 rounded-full bg-black/50 text-white hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          </button>
+          @if(isSharingSupported) {
+            <button (click)="shareStatus(status, $event)" title="Share" class="p-2 rounded-full bg-black/50 text-white hover:bg-accent focus:outline-none focus:ring-2 focus:ring-accent">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="flex flex-col items-center justify-center h-full text-center text-gray-500 dark:text-gray-400 pt-16">
+    <div class="w-32 h-32 mb-6">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full text-gray-300 dark:text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/><path d="M12 12v9"/><path d="m8 16 4-4 4 4"/></svg>
+    </div>
+    <h3 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">Nenhum Status Salvo</h3>
+    <p class="mt-2 max-w-md">
+      Os status que você salvar aparecerão aqui. Volte para a tela inicial para visualizar e salvar os status recentes.
+    </p>
+  </div>
+}
+
+
+<!-- Modal Viewer -->
+@if (selectedStatus(); as status) {
+  <div class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center" (click)="closeViewer()">
+    <div class="relative w-full max-w-lg mx-4" (click)="$event.stopPropagation()">
+      <button (click)="closeViewer()" class="absolute -top-10 right-0 text-white text-4xl hover:opacity-75 z-10">&times;</button>
+      
+      @if (status.type === 'image') {
+        <img [src]="status.url" [alt]="'Status from ' + status.user" class="rounded-lg w-full max-h-[80vh] object-contain" />
+      } @else {
+        <video [src]="status.url" class="rounded-lg w-full max-h-[80vh]" controls autoplay></video>
+      }
+      
+      <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex justify-center space-x-4">
+        <button (click)="downloadStatus(status, $event)" class="flex items-center space-x-2 bg-primary hover:bg-primary-light text-white font-bold py-2 px-4 rounded-full transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+          <span>Baixar</span>
+        </button>
+        @if(isSharingSupported) {
+          <button (click)="shareStatus(status, $event)" class="flex items-center space-x-2 bg-accent hover:opacity-80 text-white font-bold py-2 px-4 rounded-full transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.368a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" /></svg>
+            <span>Share</span>
+          </button>
+        }
+        <button (click)="removeStatus(status.id, $event)" class="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          <span>Delete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Download Notification Toast -->
+@if (downloadNotification()) {
+  <div class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-gray-800 text-white py-2 px-6 rounded-full shadow-lg z-50 transition-opacity duration-300">
+    <p>{{ downloadNotification() }}</p>
+  </div>
+}

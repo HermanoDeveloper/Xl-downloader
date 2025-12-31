@@ -1,0 +1,5 @@
+{
+  "name": "WhatsApp Status Saver",
+  "description": "A web application to browse, download, and share mock WhatsApp statuses. Features include a theme switcher and a modern, responsive design.",
+  "requestFramePermissions": []
+}
